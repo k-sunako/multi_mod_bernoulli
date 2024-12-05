@@ -1,0 +1,9 @@
+#+title: ベルヌーイ数の高速アルゴリズムの実装
+# -*- mode: org; coding: utf-8-unix; indent-tabs-mode: nil -*-
+#+startup: overview
+#+options: auto-id:t H:6
+
+* はじめに
+このレポジトリは論文 [[https://arxiv.org/abs/0807.1347][A multimodular algorithm for computing Bernoulli
+numbers]] を元にして、ベルヌーイ数を計算するアルゴリズムをPythonで実装し
+たものである。
