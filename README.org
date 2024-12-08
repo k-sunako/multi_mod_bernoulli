@@ -3,7 +3,79 @@
 #+startup: overview
 #+options: auto-id:t H:6
 
+#+PROPERTY: header-args:python :session (concat "*python* - " (buffer-file-name))
+#+PROPERTY: header-args:python+ :var cur_dir=(identity default-directory)
+#+PROPERTY: header-args:python+ :eval no-export
+
+#+begin_src elisp :exports none
+  (setq-local org-babel-python-command ".venv/bin/python")
+  (pyvenv-activate ".venv")
+#+end_src
+
+#+RESULTS:
+
 * はじめに
+
 このレポジトリは論文 [[https://arxiv.org/abs/0807.1347][A multimodular algorithm for computing Bernoulli
 numbers]] を元にして、ベルヌーイ数を計算するアルゴリズムをPythonで実装し
 たものである。
+
+* 環境構築
+
+[[https://docs.astral.sh/uv/][uv]] を利用している。
+
+* 実行方法
+
+コマンドラインで以下のように実行する。
+
+#+begin_src bash :exports code
+  uv run main.py 100
+#+end_src
+
+* 実行時間計測
+
+#+begin_src python :results file :var outfile="images/time.png" :exports results
+  from src.bernoulli import rational
+  import matplotlib.pyplot as plt
+  import time
+
+  ns = [10, 100, 1000, 2000, 3000]
+  lst_et = []
+  for n in ns:
+      t = time.time()
+      _ = rational(n)
+      et = time.time() - t
+      lst_et.append(et)
+
+  plt.plot(ns, lst_et)
+  plt.title('rational(k) execution time')
+  plt.ylabel('time[sec]')
+  plt.xlabel('k')
+  plt.savefig(outfile)
+
+  outfile
+#+end_src
+
+#+RESULTS:
+[[file:images/time.png]]
+
+* プロファイリング
+
+#+begin_src bash :exports both :results both verbatim
+  uv run python -m cProfile -s tottime main.py 1000 | tail -n +2 | head -10
+#+end_src
+
+#+RESULTS:
+#+begin_example
+         1050133 function calls (1040970 primitive calls) in 0.451 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      568    0.108    0.000    0.215    0.000 bernoulli.py:34(calc_mod)
+      568    0.079    0.000    0.079    0.000 bernoulli.py:23(get_primitive_root)
+      501    0.031    0.000    0.031    0.000 {built-in method marshal.loads}
+   557347    0.027    0.000    0.027    0.000 {built-in method math.floor}
+      430    0.014    0.000    0.033    0.000 assumptions.py:614(_prepare_class_assumptions)
+#+end_example
+
