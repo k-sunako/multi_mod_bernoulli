@@ -20,7 +20,7 @@ def get_primitive_root_(p):
             break
     return g
 
-def get_primitive_root(p):
+def get_primitive_root_old(p):
     for i in sympy.primerange(3, p+1):
         x = i
         for j in range(2, p):
@@ -30,6 +30,32 @@ def get_primitive_root(p):
                 break
         if j == p-1:
             return i
+
+
+def get_primitive_root(m):
+    if m == 2: return 1
+    if m == 167772161: return 3
+    if m == 469762049: return 3
+    if m == 754974721: return 11
+    if m == 998244353: return 3
+
+    # m-1の素因数抽出
+    divs = [2]
+    x = (m - 1) // 2
+    while x % 2 == 0: x //= 2
+    i = 3
+    while i * i <= x:
+        if x % i == 0:
+            divs.append(i)
+            while x % i == 0: x //= i
+        i += 2
+    if x > 1: divs.append(x)
+
+    # 全ての素因数で1と合同でない最小のgを探す
+    g = 2
+    while True:
+        if all(pow(g, (m - 1) // div, m) != 1 for div in divs): return g
+        g += 1
 
 def calc_mod(p, k):
     # 原始根(生成元)を求める

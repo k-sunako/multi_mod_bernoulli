@@ -52,6 +52,7 @@ numbers]] を元にして、ベルヌーイ数を計算するアルゴリズム�
   plt.ylabel('time[sec]')
   plt.xlabel('k')
   plt.savefig(outfile)
+  plt.cla()
 
   outfile
 #+end_src
@@ -67,15 +68,19 @@ numbers]] を元にして、ベルヌーイ数を計算するアルゴリズム�
 
 #+RESULTS:
 #+begin_example
-         1050133 function calls (1040970 primitive calls) in 0.451 seconds
+         1058483 function calls (1049323 primitive calls) in 0.374 seconds
 
    Ordered by: internal time
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-      568    0.108    0.000    0.215    0.000 bernoulli.py:34(calc_mod)
-      568    0.079    0.000    0.079    0.000 bernoulli.py:23(get_primitive_root)
+      568    0.108    0.000    0.140    0.000 bernoulli.py:59(calc_mod)
       501    0.031    0.000    0.031    0.000 {built-in method marshal.loads}
    557347    0.027    0.000    0.027    0.000 {built-in method math.floor}
       430    0.014    0.000    0.033    0.000 assumptions.py:614(_prepare_class_assumptions)
+1067/1064    0.012    0.000    0.063    0.000 {built-in method builtins.__build_class__}
 #+end_example
 
+* 参考
+
++ [[https://qiita.com/AkariLuminous/items/ff38ece900dd41d7178e#25-%E5%AE%9F%E8%A3%85][【internal_math編②】AtCoder Library 解読 〜Pythonでの実装まで〜 #競技プログラミング - Qiita]]
+  + 原始根の実装を参考にした
