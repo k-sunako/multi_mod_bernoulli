@@ -1,7 +1,7 @@
 import pytest
 
 from fractions import Fraction
-from src.main import rational
+from src.bernoulli import rational
 
 def test_n():
     assert rational(2) == Fraction(1, 6)

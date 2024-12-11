@@ -1,5 +1,7 @@
 """."""
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import math
 from fractions import Fraction
 
@@ -20,7 +22,7 @@ def get_primitive_root_(p):
             break
     return g
 
-def get_primitive_root_old(p):
+def get_primitive_root_01(p):
     for i in sympy.primerange(3, p+1):
         x = i
         for j in range(2, p):
@@ -32,7 +34,7 @@ def get_primitive_root_old(p):
             return i
 
 
-def get_primitive_root(m):
+def get_primitive_root_02(m):
     if m == 2: return 1
     if m == 167772161: return 3
     if m == 469762049: return 3
@@ -52,14 +54,17 @@ def get_primitive_root(m):
     if x > 1: divs.append(x)
 
     # 全ての素因数で1と合同でない最小のgを探す
-    g = 2
+    # g = 2
+    g = 3
     while True:
         if all(pow(g, (m - 1) // div, m) != 1 for div in divs): return g
-        g += 1
+        # g += 1
+        g += 2
+
 
 def calc_mod(p, k):
     # 原始根(生成元)を求める
-    g = get_primitive_root(p)
+    g = get_primitive_root_02(p)
 
     r = pow(g, k-1, p)
     u = ((g - 1) // 2) % p
@@ -75,7 +80,7 @@ def calc_mod(p, k):
 
     return ((2 * k * S) * inv_1_gk) % p
 
-def rational(k):
+def rational(k) -> Fraction:
     Y = max(37, math.ceil(k+0.5*math.log2(k)))
     primes = list(sympy.primerange(Y+1))
     Dk = 1
@@ -90,10 +95,17 @@ def rational(k):
            M_prime = p * M_prime
     X = p
 
+    executor = ThreadPoolExecutor(max_workers=48)
+    futures = []
     rp = {}
     for p in sympy.primerange(X+1):
         if k % (p-1) != 0:
-            rp[p] = calc_mod(p, k)
+            future = executor.submit(calc_mod, p, k)
+            futures.append(future)
+            rp[p] = 1
+            # rp[p] = calc_mod(p, k)
+    for p, future in zip(rp.keys(), futures):
+        rp[p] = future.result()
 
     R = crt(list(rp.keys()), list(rp.values()))
     M = 1

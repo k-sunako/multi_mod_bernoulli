@@ -39,7 +39,7 @@ numbers]] を元にして、ベルヌーイ数を計算するアルゴリズム�
   import matplotlib.pyplot as plt
   import time
 
-  ns = [10, 100, 1000, 2000, 3000]
+  ns = [10, 100, 1000, 2000, 3000, 5000]
   lst_et = []
   for n in ns:
       t = time.time()
@@ -63,21 +63,31 @@ numbers]] を元にして、ベルヌーイ数を計算するアルゴリズム�
 * プロファイリング
 
 #+begin_src bash :exports both :results both verbatim
-  uv run python -m cProfile -s tottime main.py 1000 | tail -n +2 | head -10
+  uv run python -m cProfile -s tottime main.py 10000 | tail -n +2 | head -20
 #+end_src
 
 #+RESULTS:
 #+begin_example
-         1058483 function calls (1049323 primitive calls) in 0.374 seconds
+         98552598 function calls (98496707 primitive calls) in 34.459 seconds
 
    Ordered by: internal time
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-      568    0.108    0.000    0.140    0.000 bernoulli.py:59(calc_mod)
-      501    0.031    0.000    0.031    0.000 {built-in method marshal.loads}
-   557347    0.027    0.000    0.027    0.000 {built-in method math.floor}
-      430    0.014    0.000    0.033    0.000 assumptions.py:614(_prepare_class_assumptions)
-1067/1064    0.012    0.000    0.063    0.000 {built-in method builtins.__build_class__}
+ 6409/233   26.019    0.004    0.043    0.000 bernoulli.py:65(calc_mod)
+ 97121996    6.264    0.000    6.264    0.000 {built-in method math.floor}
+      2/1    0.773    0.386   33.409   33.409 bernoulli.py:83(rational)
+     94/2    0.346    0.004    0.007    0.003 {method 'get' of '_queue.SimpleQueue' objects}
+25762/25528    0.128    0.000    0.156    0.000 {method 'acquire' of '_thread.lock' objects}
+6409/6326    0.071    0.000    0.166    0.000 bernoulli.py:37(get_primitive_root_02)
+    83005    0.061    0.000    0.061    0.000 {built-in method builtins.pow}
+    67217    0.043    0.000    0.094    0.000 primetest.py:599(isprime)
+6458/5421    0.033    0.000    0.045    0.000 threading.py:424(notify_all)
+      510    0.032    0.000    0.032    0.000 {built-in method marshal.loads}
+25871/25845    0.029    0.000    0.037    0.000 threading.py:302(__exit__)
+19227/19136    0.029    0.000    0.034    0.000 {method '__enter__' of '_thread.RLock' objects}
+6439/6396    0.027    0.000  121.304    0.019 threading.py:323(wait)
+    87741    0.026    0.000    0.043    0.000 misc.py:501(as_int)
+    20368    0.025    0.000    0.169    0.000 generate.py:629(nextprime)
 #+end_example
 
 * 参考
