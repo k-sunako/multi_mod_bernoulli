@@ -70,9 +70,10 @@ def calc_mod(p, k):
     u = ((g - 1) // 2) % p
     S = 0; X = 1; Y = r
     for i in range(1, (p//2)+1):
-        q = math.floor(g*X/p)
+        _gX = g*X
+        q = _gX // p
         S = (S + (u - q)*Y) % p
-        X = (g * X) % p
+        X = _gX % p
         Y = (r * Y) % p
 
     # 1 - g**k の逆元を求める
@@ -92,7 +93,7 @@ def rational(k) -> Fraction:
     while M_prime < 2**(beta+1):
         p = sympy.nextprime(p)
         if (k % (p-1)) != 0:
-           M_prime = p * M_prime
+            M_prime = p * M_prime
     X = p
 
     executor = ThreadPoolExecutor(max_workers=48)
@@ -100,10 +101,10 @@ def rational(k) -> Fraction:
     rp = {}
     for p in sympy.primerange(X+1):
         if k % (p-1) != 0:
+            print(p)
             future = executor.submit(calc_mod, p, k)
             futures.append(future)
             rp[p] = 1
-            # rp[p] = calc_mod(p, k)
     for p, future in zip(rp.keys(), futures):
         rp[p] = future.result()
 
@@ -120,6 +121,7 @@ def rational(k) -> Fraction:
         Nk = N_prime - M
 
     return Fraction(Nk, Dk)
+
 
 if __name__ == '__main__':
     import argparse
